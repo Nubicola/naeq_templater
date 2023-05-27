@@ -58,7 +58,7 @@ const selection = tp.file.selection();
 
 // if nothing is selected, replace all ALL CAPS WORDS in file
 if (selection.length == 0) {
-	newContent = noteContent.replace(/(\b[A-Z0-9]['A-Z0-9]+|\b[A-Z]\b)\|?/g, replacement_action);
+	newContent = noteContent.replace(/(\b[A-Z0-9]['A-Z0-9]+\b|\b[A-Z]\b)\|?/g, replacement_action);
 	await app.vault.modify(tp.file.find_tfile(tp.file.title), newContent);
 } 
 // otherwise replace the selection (caps or not!) as a phrase
