@@ -13,6 +13,7 @@ function naeq_calc (str) {
 
 // what breaks:
 // - existing links get parsed and replaced
+// too many words will exceed an async limit
 
 // done
 // - Hello gets parsed -> Fixed with corrected regexp
@@ -25,8 +26,9 @@ const selection = tp.file.selection();
 //const query = /(\b[A-Z0-9]['A-Z0-9]+\b|\b[A-Z]\b)\|?/g;
 var wordLinksMap = new Map();
 function process_pages (word, target_file, map) {
-	console.log("processing " + target_file + " " + word);
-	console.log(tp.user.process_page(tp, target_file, word));
+	//console.log("processing " + target_file + " " + word);
+	var a = tp.user.process_page(tp, target_file, word);
+	//console.log(a);
 }
 
 if (selection.length == 0) {
@@ -46,7 +48,7 @@ if (selection.length == 0) {
 	let target_file = "NAEQ_"+val;
 	let target_link = "[["+target_file+"|"+selection.toUpperCase()+"]] ";
 	//wordLinksMap.set(selection, target_file);	
-	tp.user.process_page(tp, target_file, selection);
+	tp.user.process_page(tp, selection, target_file);
 	tp.file.cursor_append(target_link)
 }
 
