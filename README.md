@@ -1,6 +1,10 @@
 # naeq_templater
 NAEQ for Obsidian using Templater
-This is a template and a workflow for developing and maintaining a personal English Qabbalah library in an Obsidian Vault.
+This is a template and a workflow for developing and maintaining a personal English Qabbalah library in an Obsidian Vault. Here's a demo
+
+
+https://github.com/Nubicola/naeq_templater/assets/89207946/40e3b207-155e-4e65-90fb-4bba9acbba42
+
 
 ## Brief Howto
 - Install and enable the dependencies in your vault. I currently suggest you use a vault exclusively for NAEQ.
