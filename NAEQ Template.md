@@ -8,36 +8,6 @@ function naeq_calc (str) {
 	return str.toLowerCase().split('').reduce( (prev, current, curIdx, array) => ((current.charCodeAt(0)-a_val)*19%26+1)+prev, 0)
 }
 
-// put the word into the file that matches the word's value
-// NAEQ(CAT) => 38, append to NAEQ_38
-async function append_to_other (file, x) {
-	//console.log("Looking up file "+file+".md");
-	const it_exists = await tp.file.exists(file+".md");
-	if (!it_exists) {
-		//console.log("File not there!");
-		await tp.file.create_new("", file, false);	
-	}
-	const target_file = tp.file.find_tfile(file);
-	//t_content = await app.vault.read(file);
-	await app.vault.append(target_file, x+"\n");
-}
-
-// given a string, replace it with naeq_value and markup
-function replacement_action (to_replace) {
-	//let newContent = "\n\n"+ noteContent.replace(/[A-Z]+/g, function (x) {
-	// here x is the string that's in all caps
-	// don't process it if it already is NAEQ!
-	// console.log(to_replace);
-	if (to_replace.startsWith("NAEQ")) { return x; }
-	let nval = naeq_calc(to_replace);
-	// put the string into the target file
-	let target_file_name = "NAEQ_"+nval;
-	append_to_other(target_file_name, to_replace.toUpperCase());
-	// make the link
-	//return x + " [[" + target_file_name + "|" + nval + "]]";
-	return "[[" + target_file_name + "|" + to_replace.toUpperCase() + "]]";
-}
-
 // find all ALL CAPS and replace them with links to the NAEQ value page
 // improvement
 
@@ -49,25 +19,35 @@ function replacement_action (to_replace) {
 // - replace whole phrases if they're highlighted
 let noteContent = tp.file.content;
 let newContent = "";
-
-
-/*const editor = this.app.workspace.getActiveViewOfType(tp.obsidian.MarkdownView).editor; 
-const selection = editor.getSelection(); */ // Get selected text
-
 const selection = tp.file.selection();
 
 // if nothing is selected, replace all ALL CAPS WORDS in file
-if (selection.length == 0) {
-	newContent = noteContent.replace(/(\b[A-Z0-9]['A-Z0-9]+\b|\b[A-Z]\b)\|?/g, replacement_action);
-	await app.vault.modify(tp.file.find_tfile(tp.file.title), newContent);
-} 
-// otherwise replace the selection (caps or not!) as a phrase
-else { 
-	newContent = replacement_action(selection);
-	//await app.vault.append(tp.file.find_tfile(tp.file.title), newContent);
-	tp.file.cursor_append(newContent)
+//const query = /(\b[A-Z0-9]['A-Z0-9]+\b|\b[A-Z]\b)\|?/g;
+var wordLinksMap = new Map();
+function process_pages (word, target_file, map) {
+	console.log("processing " + target_file + " " + word);
+	console.log(tp.user.process_page(tp, target_file, word));
 }
 
-//await app.vault.modify(tp.file.find_tfile(tp.file.title), newContent);
+if (selection.length == 0) {
+	newContent = noteContent.replace(/(\b[A-Z0-9]['A-Z0-9]+\b|\b[A-Z]\b)\|?/g, function (word) {
+		let val = naeq_calc(word);
+		let target_file = "NAEQ_"+val;
+		let target_link = "[["+target_file+"|"+word.toUpperCase()+"]] ";
+		wordLinksMap.set(word, target_file);
+		//tp.user.process_page(tp, target_file, word);
+		return target_link;	
+	});
+	await app.vault.modify(tp.file.find_tfile(tp.file.title), newContent);
+	wordLinksMap.forEach(process_pages);
+// otherwise replace the selection (caps or not!) as a phrase
+} else { 
+	let val = naeq_calc(selection);
+	let target_file = "NAEQ_"+val;
+	let target_link = "[["+target_file+"|"+selection.toUpperCase()+"]] ";
+	//wordLinksMap.set(selection, target_file);	
+	tp.user.process_page(tp, target_file, selection);
+	tp.file.cursor_append(target_link)
+}
 
 -%>
