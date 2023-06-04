@@ -5,7 +5,15 @@
 // returns the NAEQ value of the string passed to it
 const a_val = "a".charCodeAt(0);
 function naeq_calc (str) {
-	return str.toLowerCase().split('').reduce( (prev, current, curIdx, array) => ((current.charCodeAt(0)-a_val)*19%26+1)+prev, 0)
+	//return str.toLowerCase().split('').reduce( (prev, current, curIdx, array) => ((current.charCodeAt(0)-a_val)*19%26+1)+prev, 0)
+	// I was doing this "smarter" but it broke on selections, so doing it the "dumb" wa
+	let rval = 0;
+	const sstr = str.replace(/\s/g, "").toLowerCase();
+	for (let i = 0; i < sstr.length; i++) {
+		const character = sstr.charAt(i);
+		rval += (character.charCodeAt(0)-a_val)*19%26+1;
+	}
+	return rval;
 }
 
 // find all ALL CAPS and replace them with links to the NAEQ value page
