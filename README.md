@@ -33,3 +33,7 @@ This template depends on the [Templater plugin from silent void](https://github.
 ## Workflow Dependencies
 My workflow currently includes
 - [Text Format](https://github.com/Benature/obsidian-text-format) to convert text to uppercase
+
+## Support
+Do you have some ideas about what to do with this? Let me know!
+Do you really like what I've done? Feel free to [buy me a coffee](https://www.buymeacoffee.com/nubicola)
