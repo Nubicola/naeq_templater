@@ -4,6 +4,7 @@
 
 // returns the NAEQ value of the string passed to it
 const a_val = "a".charCodeAt(0);
+const z_val = "z".charCodeAt(0);
 function naeq_calc (str) {
 	//return str.toLowerCase().split('').reduce( (prev, current, curIdx, array) => ((current.charCodeAt(0)-a_val)*19%26+1)+prev, 0)
 	// I was doing this "smarter" but it broke on selections, so doing it the "dumb" wa
@@ -11,6 +12,9 @@ function naeq_calc (str) {
 	const sstr = str.replace(/\s/g, "").toLowerCase();
 	for (let i = 0; i < sstr.length; i++) {
 		const character = sstr.charAt(i);
+		if (character.charCodeAt(0) > z_val || character.charCodeAt(0) < a_val) {
+			continue
+		}
 		rval += (character.charCodeAt(0)-a_val)*19%26+1;
 	}
 	return rval;
@@ -56,7 +60,7 @@ if (selection.length == 0) {
 	let target_file = "NAEQ_"+val;
 	let target_link = "[["+target_file+"|"+selection.toUpperCase()+"]] ";
 	//wordLinksMap.set(selection, target_file);	
-	tp.user.process_page(tp, selection, target_file);
+	tp.user.process_page(tp, selection.toUpperCase(), target_file);
 	tp.file.cursor_append(target_link)
 }
 
